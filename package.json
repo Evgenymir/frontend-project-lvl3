@@ -1,6 +1,6 @@
 {
   "name": "frontend-project-lvl3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "RSS aggregator",
   "main": "index.js",
   "scripts": {
@@ -48,6 +48,9 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "bootstrap": "^4.5.0"
+    "axios": "^0.19.2",
+    "bootstrap": "^4.5.0",
+    "melanke-watchjs": "^1.5.2",
+    "yup": "^0.29.1"
   }
 }
