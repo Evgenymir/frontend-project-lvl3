@@ -36,3 +36,41 @@
         display: block;
     }
 }
+
+.feed-section {
+    margin-bottom: 40px;
+}
+
+.feed-section__title {
+    margin-bottom: 20px;
+}
+
+.feed-section__description {
+    margin-bottom: 20px;
+}
+
+.feed-section__list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.feed-section__item {
+    margin-bottom: 10px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+a.feed-section__link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border ease 0.3s;
+
+    &:hover {
+        border-color: #007bff;
+    }
+}

@@ -13,6 +13,7 @@ const runProgramm = () => {
   const errorBlock = form.querySelector('.error-block');
   const button = form.elements.submit;
   const spinner = button.querySelector('.spinner-block');
+  const feed = document.querySelector('.j-feed');
 
   const state = {
     processState: 'waiting',
@@ -69,6 +70,77 @@ const runProgramm = () => {
     }
   });
 
+  const parseData = (data) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data, 'application/xml');
+
+    const title = doc.querySelector('title').textContent;
+    const description = doc.querySelector('description').textContent;
+    const postsArray = [...doc.querySelectorAll('item')];
+
+    const handlesPost = (post) => {
+      const titlePost = post.querySelector('title').textContent;
+      const linkPost = post.querySelector('link').textContent;
+
+      return {
+        title: titlePost,
+        link: linkPost,
+      };
+    };
+
+    const posts = postsArray.map((post) => handlesPost(post));
+
+    const result = {
+      title,
+      description,
+      posts,
+    };
+
+    return result;
+  };
+
+  const createPost = (title, link) => {
+    const postItem = document.createElement('li');
+    const postLink = document.createElement('a');
+    postItem.classList.add('feed-section__item');
+    postLink.classList.add('feed-section__link');
+    postLink.setAttribute('href', link);
+    postLink.setAttribute('target', '_blank');
+    postLink.textContent = title;
+
+    postItem.append(postLink);
+    return postItem;
+  };
+
+  const createPosts = (posts) => {
+    if (posts.length === 0) {
+      return 'No posts';
+    }
+
+    const postsList = document.createElement('ul');
+    postsList.classList.add('feed-section__list');
+    posts.forEach(({ title, link }) => {
+      const post = createPost(title, link);
+      postsList.append(post);
+    });
+    return postsList;
+  };
+
+  const createFeed = (data) => {
+    const section = document.createElement('section');
+    const title = document.createElement('h2');
+    const description = document.createElement('div');
+    section.classList.add('feed-section');
+    title.classList.add('feed-section__title');
+    description.classList.add('feed-section__description');
+    title.textContent = data.title;
+    description.textContent = data.description;
+    const posts = createPosts(data.posts);
+
+    section.append(title, description, posts);
+    return section;
+  };
+
   input.addEventListener('input', (e) => {
     const valueUrl = e.target.value.trim();
     if (valueUrl !== '') {
@@ -95,8 +167,10 @@ const runProgramm = () => {
     state.processState = 'sending';
     axios.get(`${corsProxy}${state.inputValue}`)
       .then((response) => {
-        console.log(response);
         state.processState = 'finished';
+        const data = parseData(response.data);
+        const sectionFeed = createFeed(data);
+        feed.append(sectionFeed);
       })
       .catch((error) => {
         state.processState = 'failed';
