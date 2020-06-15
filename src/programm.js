@@ -13,6 +13,7 @@ const runProgramm = () => {
     processState: 'waiting',
     validationState: 'valid',
     inputValue: '',
+    inputValues: [],
     errors: {},
   };
 

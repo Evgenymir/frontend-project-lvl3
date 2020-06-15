@@ -30,6 +30,15 @@ export const onSubmitHandler = (state) => (e) => {
   e.preventDefault();
 
   state.processState = 'sending';
+
+  if (!state.inputValues.includes(state.inputValue)) {
+    state.inputValues.push(state.inputValue);
+  } else {
+    state.errors.network = 'URL was added before';
+    state.processState = 'failed';
+    return;
+  }
+
   axios.get(`${corsProxy}${state.inputValue}`)
     .then((response) => {
       state.processState = 'finished';

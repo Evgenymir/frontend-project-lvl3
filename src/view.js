@@ -43,6 +43,7 @@ export const processStateRender = (state, input, errorBlock, button, spinner) =>
       button.disabled = true;
       input.classList.add('is-invalid');
       errorBlock.textContent = state.errors.network;
+      errorBlock.classList.add('is-error-active');
       break;
     }
     default: {
