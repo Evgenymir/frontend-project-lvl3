@@ -42,8 +42,9 @@ export const onSubmitHandler = (state) => (e) => {
   axios.get(`${corsProxy}${state.inputValue}`)
     .then((response) => {
       state.processState = 'finished';
+      state.feedCount += 1;
       const data = parse(response.data);
-      const sectionFeed = createFeed(data);
+      const sectionFeed = createFeed(data, state.feedCount);
       feed.append(sectionFeed);
     })
     .catch((error) => {

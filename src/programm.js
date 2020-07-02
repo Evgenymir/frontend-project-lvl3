@@ -14,6 +14,7 @@ const runProgramm = () => {
     validationState: 'valid',
     inputValue: '',
     inputValues: [],
+    feedCount: 0,
     errors: {},
   };
 
