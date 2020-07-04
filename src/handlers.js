@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import i18next from 'i18next';
 import axios from 'axios';
 import { isValidateUrl, corsProxy } from './utils';
 import createFeed from './create';
@@ -17,7 +18,7 @@ export const onInputHandler = (state) => (e) => {
         state.inputValue = valueUrl;
       } else {
         state.validationState = 'invalid';
-        state.errors.invalid = 'Is not valid url';
+        state.errors.invalid = i18next.t('validate.notValid');
       }
     });
   } else {
@@ -34,7 +35,7 @@ export const onSubmitHandler = (state) => (e) => {
   if (!state.inputValues.includes(state.inputValue)) {
     state.inputValues.push(state.inputValue);
   } else {
-    state.errors.network = 'URL was added before';
+    state.errors.network = i18next.t('validate.addedBefore');
     state.processState = 'failed';
     return;
   }
@@ -48,7 +49,7 @@ export const onSubmitHandler = (state) => (e) => {
       feed.append(sectionFeed);
     })
     .catch((error) => {
-      state.errors.network = 'Network error, please try again later.';
+      state.errors.network = i18next.t('error.network');
       state.processState = 'failed';
       console.log(error);
       throw error;

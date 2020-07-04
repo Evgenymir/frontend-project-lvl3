@@ -1,6 +1,6 @@
 {
   "name": "frontend-project-lvl3",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "RSS aggregator",
   "main": "index.js",
   "scripts": {
@@ -53,6 +53,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
+    "i18next": "^19.5.4",
     "melanke-watchjs": "^1.5.2",
     "yup": "^0.29.1"
   }

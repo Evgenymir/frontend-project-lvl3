@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 const createPost = (title, link, feedCount, index) => {
   const postItem = document.createElement('li');
   const postLink = document.createElement('a');
@@ -14,7 +16,7 @@ const createPost = (title, link, feedCount, index) => {
 
 const createPosts = (posts, feedCount) => {
   if (posts.length === 0) {
-    return 'No posts';
+    return i18next.t('noPosts');
   }
 
   const postsList = document.createElement('ul');
