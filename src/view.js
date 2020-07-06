@@ -1,3 +1,4 @@
+import createFeed from './create';
 /* eslint-disable no-param-reassign */
 export const processValidationRender = (state, input, errorBlock) => {
   if (state.validationState === 'valid') {
@@ -50,4 +51,17 @@ export const processStateRender = (state, input, errorBlock, button, spinner) =>
       throw new Error(`Unknown state ${state.processState}`);
     }
   }
+};
+
+export const renderFeed = (state, feed) => {
+  if (state.feeds.length === 0) {
+    return;
+  }
+
+  const result = [];
+  state.feeds.forEach((feedItem) => {
+    const sectionFeed = createFeed(feedItem);
+    result.unshift(sectionFeed);
+  });
+  feed.innerHTML = result.join('');
 };

@@ -1,48 +1,41 @@
 import i18next from 'i18next';
 
-const createPost = (title, link, feedCount, index) => {
-  const postItem = document.createElement('li');
-  const postLink = document.createElement('a');
-  postItem.classList.add('feed-section__item');
-  postItem.id = `feed-${feedCount}-post-${index}`;
-  postLink.classList.add('feed-section__link');
-  postLink.setAttribute('href', link);
-  postLink.setAttribute('target', '_blank');
-  postLink.textContent = title;
+const createPost = (title, link, id, index) => {
+  const templatePost = `
+    <li class="feed-section__item" id="feed-${id}-post-${index}">
+      <a class="feed-section__link" href="${link}" target="_blank">${title}</a>
+    </li>
+  `;
 
-  postItem.append(postLink);
-  return postItem;
+  return templatePost;
 };
 
-const createPosts = (posts, feedCount) => {
+const createPosts = (posts, id) => {
   if (posts.length === 0) {
     return i18next.t('noPosts');
   }
 
-  const postsList = document.createElement('ul');
-  postsList.classList.add('feed-section__list');
+  const postsList = [];
   posts.forEach(({ title, link }, index) => {
     const currentIndex = index + 1;
-    const post = createPost(title, link, feedCount, currentIndex);
-    postsList.append(post);
+    const post = createPost(title, link, id, currentIndex);
+    postsList.push(post);
   });
-  return postsList;
+  const templatePosts = `<ul class="feed-section__list">${postsList.join('')}</ul>`;
+  return templatePosts;
 };
 
-const createFeed = (data, feedCount) => {
-  const section = document.createElement('section');
-  const title = document.createElement('h2');
-  const description = document.createElement('div');
-  section.classList.add('feed-section');
-  section.id = `feed-${feedCount}`;
-  title.classList.add('feed-section__title');
-  description.classList.add('feed-section__description');
-  title.textContent = data.title;
-  description.textContent = data.description;
-  const posts = createPosts(data.posts, feedCount);
+const createFeed = (data) => {
+  const posts = createPosts(data.posts, data.id);
+  const templateFeed = `
+  <section id="feed-${data.id}" class="feed-section">
+    <h2 class="feed-section__title">${data.title}</h2>
+    <div class="feed-section__description">${data.description}</div>
+    ${posts}
+  </section>
+  `;
 
-  section.append(title, description, posts);
-  return section;
+  return templateFeed;
 };
 
 export default createFeed;
