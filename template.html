@@ -8,28 +8,26 @@
   <body>
     <div class="jumbotron">
       <div class="container">
-        <h1 class="title-h1">RSS feed</h1>
-        <div class="description-link">http://lorem-rss.herokuapp.com/feed</div>
-        <div class="description-link">https://ru.hexlet.io/lessons.rss</div>
-        <hr class="my-4">
-        <fieldset>
-          <form class="form-row j-form">
-            <div class="col-12 col-md-9 col-lg-10 mt-2">
-              <input type="text" name="url" class="form-control form-control-lg j-input" placeholder="feed" autofocus>
-              <div class="error-block"></div>
-            </div>
-            <div class="col-12 col-md-3 col-lg-2 mt-2">
-              <button type="submit" name="submit" class="btn btn-primary btn-lg btn-block form-button" disabled>
-                <span class="spinner-block">
-                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                </span>
-                <span class="form-button__text">
-                  Send
-                </span>
-              </button>
-            </div>
-          </form>
-        </fieldset>
+        <h1 class="title-h1">RSS Reader</h1>
+        <p class="lead">Start reading RSS today! It is easy, it is nicely.</p>
+        <div class="description-link"><strong>Example:</strong> https://ru.hexlet.io/lessons.rss</div>
+        <div class="description-link"><strong>Example:</strong> http://lorem-rss.herokuapp.com/feed</div>
+        <form class="form form-row j-form">
+          <div class="col-12 col-md-9 col-lg-10 my-2">
+            <input type="text" name="url" class="form-control form-control-lg j-input" placeholder="RSS link" autofocus>
+            <div class="feedback-block j-feedback-block"></div>
+          </div>
+          <div class="col-12 col-md-3 col-lg-2 my-2">
+            <button type="submit" name="submit" class="btn btn-primary btn-lg btn-block form-button" disabled>
+              <span class="spinner-block j-spinner-block">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              </span>
+              <span class="form-button__text j-form-button__text">
+                Send
+              </span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
     <div class="feed-wrapper">

@@ -1,50 +1,54 @@
 import createFeed from './create';
 /* eslint-disable no-param-reassign */
-export const processValidationRender = (state, input, errorBlock) => {
+export const processValidationRender = (state, elements) => {
   if (state.validationState === 'valid') {
-    input.classList.remove('is-invalid');
-    input.classList.add('is-valid');
-    errorBlock.classList.remove('is-error-active');
-    errorBlock.textContent = state.errors.valid;
+    elements.input.classList.remove('is-invalid');
+    elements.input.classList.add('is-valid');
+    elements.feedbackBlock.classList.remove('is-error');
+    elements.feedbackBlock.textContent = state.errors.valid;
   } else {
-    input.classList.add('is-invalid');
-    input.classList.remove('is-valid');
-    errorBlock.classList.add('is-error-active');
-    errorBlock.textContent = state.errors.invalid;
+    elements.input.classList.add('is-invalid');
+    elements.input.classList.remove('is-valid');
+    elements.feedbackBlock.classList.remove('is-success');
+    elements.feedbackBlock.classList.add('is-error');
+    elements.feedbackBlock.textContent = state.errors.invalid;
   }
 };
 
-export const processStateRender = (state, input, errorBlock, button, spinner) => {
+export const processStateRender = (state, elements) => {
   switch (state.processState) {
     case 'waiting': {
-      input.classList.remove('is-invalid');
-      input.classList.remove('is-valid');
-      errorBlock.classList.remove('is-error-active');
-      button.disabled = true;
+      elements.input.classList.remove('is-invalid');
+      elements.input.classList.remove('is-valid');
+      elements.feedbackBlock.classList.remove('is-success');
+      elements.feedbackBlock.classList.remove('is-error');
+      elements.button.disabled = true;
       break;
     }
     case 'filling': {
-      button.disabled = state.validationState === 'invalid';
-      processValidationRender(state, input, errorBlock);
+      elements.button.disabled = state.validationState === 'invalid';
+      processValidationRender(state, elements);
       break;
     }
     case 'sending': {
-      button.disabled = true;
-      spinner.classList.add('is-active-spinner');
+      elements.button.disabled = true;
+      elements.spinner.classList.add('is-active-spinner');
       break;
     }
     case 'finished': {
-      input.value = '';
-      input.classList.remove('is-valid');
-      spinner.classList.remove('is-active-spinner');
+      elements.input.value = '';
+      elements.input.classList.remove('is-valid');
+      elements.spinner.classList.remove('is-active-spinner');
+      elements.feedbackBlock.classList.add('is-success');
+      elements.feedbackBlock.textContent = state.success;
       break;
     }
     case 'failed': {
-      spinner.classList.remove('is-active-spinner');
-      button.disabled = true;
-      input.classList.add('is-invalid');
-      errorBlock.textContent = state.errors.network;
-      errorBlock.classList.add('is-error-active');
+      elements.spinner.classList.remove('is-active-spinner');
+      elements.button.disabled = true;
+      elements.input.classList.add('is-invalid');
+      elements.feedbackBlock.textContent = state.errors.network;
+      elements.feedbackBlock.classList.add('is-error');
       break;
     }
     default: {

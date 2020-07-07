@@ -1,5 +1,21 @@
 @import "~bootstrap/scss/bootstrap";
 
+body {
+    color: #fff;
+}
+
+.jumbotron {
+    background: #343a40;
+}
+
+.description-link {
+    color: #828485;
+}
+
+.form {
+    margin-top: 20px;
+}
+
 .form-button {
     position: relative;
     display: flex;
@@ -26,18 +42,25 @@
     }
 }
 
-.error-block {
+.feedback-block {
     display: none;
     color: #d54343;
     font-size: 12px;
     padding: 5px 16px;
 
-    &.is-error-active {
+    &.is-error {
         display: block;
+    }
+
+    &.is-success {
+        display: block;
+        font-size: 14px;
+        color: #28a745;
     }
 }
 
 .feed-section {
+    color: #000000;
     margin-bottom: 40px;
 }
 

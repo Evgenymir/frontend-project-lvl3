@@ -1,46 +1,35 @@
 import i18next from 'i18next';
 import { watch } from 'melanke-watchjs';
-import { onInputHandler, onSubmitHandler, makeUpdates } from './handlers';
+import { onInputHandler, onSubmitHandler } from './handlers';
 import { processStateRender, renderFeed } from './view';
 import resources from './locales';
+import { elements } from './variable';
 
 const runProgramm = () => {
   i18next.init({
     lng: 'en',
     debug: true,
     resources,
+  }).then(() => {
+    elements.buttonText.textContent = i18next.t('button');
+    elements.input.placeholder = i18next.t('input');
   });
 
   const state = {
     processState: 'waiting',
     validationState: 'valid',
     inputValue: '',
-    feedCount: 0,
     errors: {},
+    success: '',
+    feedCount: 0,
     feeds: [],
-    // posts: [],
   };
 
-  const delay = 5000;
-  const form = document.querySelector('.j-form');
-  const input = form.url;
-  const errorBlock = form.querySelector('.error-block');
-  const button = form.elements.submit;
-  const spinner = button.querySelector('.spinner-block');
-  const buttonText = button.querySelector('.form-button__text');
-  const feedBlock = document.querySelector('.j-feed');
+  watch(state, ['processState', 'validationState'], () => processStateRender(state, elements));
+  watch(state, 'feeds', () => renderFeed(state, elements.feedBlock));
 
-  buttonText.textContent = i18next.t('button');
-  input.placeholder = i18next.t('input');
-
-  watch(state, ['processState', 'validationState'], () => processStateRender(state, input, errorBlock, button, spinner));
-  watch(state, 'feeds', () => {
-    renderFeed(state, feedBlock);
-    makeUpdates(state, delay);
-  });
-
-  input.addEventListener('input', onInputHandler(state));
-  form.addEventListener('submit', onSubmitHandler(state));
+  elements.input.addEventListener('input', onInputHandler(state));
+  elements.form.addEventListener('submit', onSubmitHandler(state));
 };
 
 export default runProgramm;

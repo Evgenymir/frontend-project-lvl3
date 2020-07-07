@@ -9,6 +9,7 @@ export default {
       addedBefore: 'URL was added before',
     },
     button: 'Send',
-    input: 'Enter the feed address',
+    input: 'RSS link',
+    successText: 'Rss has been loaded',
   },
 };
