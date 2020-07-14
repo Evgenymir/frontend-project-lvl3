@@ -3,13 +3,14 @@ export default {
     noPosts: 'Нет постов',
     error: {
       network: 'Сеть недоступна, попробуйте позже',
+      addedBefore: 'Этот URL был добавлен ранее',
+      wrongUrl: 'Неправильный URL адресс',
     },
     validate: {
       notValid: 'Некорректный URL',
-      addedBefore: 'Этот URL был добавлен ранее',
     },
     button: 'Отправить',
     input: 'Ссылка новостной ленты',
-    successText: 'Новости успешно добавлены',
+    successSending: 'Новости успешно добавлены',
   },
 };
