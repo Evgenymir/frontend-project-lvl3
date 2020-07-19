@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import { watch } from 'melanke-watchjs';
-import { onInputHandler, onSubmitHandler } from './handlers';
+import { makeUpdates, onInputHandler, onSubmitHandler } from './handlers';
 import { processStateRender, renderFeed } from './view';
 import resources from './locales';
 
@@ -20,31 +20,32 @@ const runProgramm = () => {
     debug: true,
     resources,
   }).then(() => {
-    elements.buttonText.textContent = i18next.t('button');
-    elements.input.placeholder = i18next.t('input');
+    elements.buttonText.textContent = i18next.t('buttonText');
+    elements.input.placeholder = i18next.t('inputText');
   });
 
   const state = {
     form: {
       url: {
         value: '',
-        isDubleUrl: false,
-        isValid: false,
-        processState: 'waiting',
-        isNotRssUrl: false,
       },
+      isValid: false,
+      processState: 'waiting',
     },
-    isErrorNetwork: false,
-    isUpdateProcess: false,
+    error: '',
     feeds: [],
     posts: [],
   };
 
-  watch(state.form.url, ['processState', 'isValid'], () => processStateRender(state, elements));
+  watch(state.form, ['processState', 'isValid'], () => processStateRender(state, elements));
   watch(state, 'posts', () => renderFeed(state, elements.feedBlock));
+  watch(state, 'error', () => {
+    elements.feedbackBlock.innerHTML = i18next.t(state.error);
+  });
 
   elements.input.addEventListener('input', onInputHandler(state));
   elements.form.addEventListener('submit', onSubmitHandler(state));
+  makeUpdates(state);
 };
 
 export default runProgramm;

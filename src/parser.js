@@ -7,15 +7,14 @@ const handlerPost = (post) => {
     link: linkPost,
   };
 };
-/* eslint-disable no-param-reassign */
+
 export default (data, state) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'application/xml');
 
   const error = doc.querySelector('parsererror');
   if (error) {
-    state.form.url.isNotRssUrl = true;
-    throw new Error('Is not RSS');
+    throw new Error('error.wrongUrl');
   }
 
   const title = doc.querySelector('title').textContent;

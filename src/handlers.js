@@ -6,62 +6,65 @@ import uniqueId from 'lodash/uniqueId';
 import parse from './parser';
 import { corsProxy, delay } from './config';
 
-const schema = yup.string().url();
-const isValidateUrl = (url) => schema.isValid(url);
+const runValidate = (state, value) => {
+  const urls = state.feeds.map(({ urlFeed }) => urlFeed);
+  const schema = yup.string().url().required();
+  const schemaAddedBefore = yup.mixed().notOneOf(urls);
+  const validateUrl = (url) => schema.isValidSync(url);
+  const newUrl = (url) => schemaAddedBefore.isValidSync(url);
 
-const makeUpdates = (state) => {
-  const feedsUrl = state.feeds.map(({ urlFeed }) => `${corsProxy}${urlFeed}`);
-  const promises = feedsUrl.map(axios.get);
+  const isValidUrl = validateUrl(value);
+  const isNewUrl = newUrl(value);
 
-  Promise.all(promises).then((response) => {
-    response.forEach(({ data }, index) => {
-      const currentFeed = state.feeds[index];
+  if (!isValidUrl) {
+    state.form.isValid = false;
+    state.error = 'validate.notValid';
+    return;
+  }
+
+  state.form.isValid = true;
+  state.form.url.value = value;
+
+  if (!isNewUrl) {
+    state.error = 'error.addedBefore';
+    state.form.isValid = false;
+  }
+};
+
+export const makeUpdates = (state) => {
+  state.feeds.forEach((feed) => {
+    axios.get(`${corsProxy}${feed.urlFeed}`).then(({ data }) => {
       const { posts } = parse(data);
-      const currentOldPosts = state.posts.filter(({ feedId }) => feedId === currentFeed.id);
-      const newPosts = differenceBy(posts, currentOldPosts, 'link')
-        .map((postItem) => ({ ...postItem, feedId: currentFeed.id, id: uniqueId('post_') }));
+      const filterOldPosts = state.posts.filter(({ feedId }) => feedId === feed.id);
+      const newPosts = differenceBy(posts, filterOldPosts, 'link')
+        .map((postItem) => ({ ...postItem, feedId: feed.id, id: uniqueId('post_') }));
       state.posts.unshift(...newPosts);
     });
-  }).finally(() => setTimeout(() => makeUpdates(state), delay));
+  });
+  setTimeout(makeUpdates, delay, state);
 };
 
 export const onInputHandler = (state) => (e) => {
   const valueUrl = e.target.value.trim();
-  const wasAddedBefore = state.feeds
-    .find(({ urlFeed }) => valueUrl.toLowerCase() === urlFeed.toLowerCase());
 
-  if (valueUrl !== '') {
-    state.form.url.processState = 'filling';
-    isValidateUrl(valueUrl).then((valid) => {
-      if (valid) {
-        state.form.url.isValid = true;
-        state.form.url.isDubleUrl = false;
-        state.form.url.value = valueUrl;
-
-        if (wasAddedBefore) {
-          state.form.url.isValid = false;
-          state.form.url.isDubleUrl = true;
-        }
-      } else {
-        state.form.url.isValid = false;
-      }
-    });
-  } else {
-    state.form.url.isValid = false;
-    state.form.url.processState = 'waiting';
+  if (valueUrl === '') {
+    state.form.isValid = false;
+    state.form.processState = 'waiting';
+    return;
   }
+
+  state.form.processState = 'filling';
+  runValidate(state, valueUrl);
 };
 
 export const onSubmitHandler = (state) => (e) => {
   e.preventDefault();
 
-  state.form.url.processState = 'sending';
-  state.isErrorNetwork = false;
-  state.form.url.isNotRssUrl = false;
+  state.form.processState = 'sending';
 
   axios.get(`${corsProxy}${state.form.url.value}`)
     .then((response) => {
-      state.form.url.processState = 'finished';
+      state.form.processState = 'finished';
       const data = parse(response.data, state);
       const feed = {
         urlFeed: state.form.url.value,
@@ -79,19 +82,11 @@ export const onSubmitHandler = (state) => (e) => {
         state.posts.push(result);
       });
       state.feeds.push(feed);
-
-      if (!state.isUpdateProcess) {
-        makeUpdates(state);
-        state.isUpdateProcess = true;
-      }
+      state.error = 'success';
     })
     .catch((error) => {
-      if (state.form.url.isNotRssUrl) {
-        state.form.url.processState = 'failed';
-      } else {
-        state.isErrorNetwork = true;
-        state.form.url.processState = 'failed';
-      }
+      state.error = error.message;
+      state.form.processState = 'failed';
       console.log(error);
       throw error;
     });

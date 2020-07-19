@@ -43,17 +43,18 @@ body {
 }
 
 .feedback-block {
-    display: none;
+    height: 28px;
     color: #d54343;
     font-size: 12px;
     padding: 5px 16px;
+    visibility: hidden;
 
     &.is-error {
-        display: block;
+        visibility: visible;
     }
 
     &.is-success {
-        display: block;
+        visibility: visible;
         font-size: 14px;
         color: #28a745;
     }
