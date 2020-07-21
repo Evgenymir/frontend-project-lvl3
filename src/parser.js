@@ -8,7 +8,7 @@ const handlerPost = (post) => {
   };
 };
 
-export default (data, state) => {
+export default (data) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'application/xml');
 
