@@ -6,28 +6,16 @@ import uniqueId from 'lodash/uniqueId';
 import parse from './parser';
 import { corsProxy, delay } from './config';
 
-const runValidate = (state, value) => {
-  const urls = state.feeds.map(({ urlFeed }) => urlFeed);
-  const schema = yup.string().url().required();
-  const schemaAddedBefore = yup.mixed().notOneOf(urls);
-  const validateUrl = (url) => schema.isValidSync(url);
-  const newUrl = (url) => schemaAddedBefore.isValidSync(url);
+const schema = yup.string().url('validate.notValid').required();
 
-  const isValidUrl = validateUrl(value);
-  const isNewUrl = newUrl(value);
+const runValidate = (urls, value) => {
+  const schemaWithCheckDoubleUrl = schema.notOneOf(urls, 'error.addedBefore');
 
-  if (!isValidUrl) {
-    state.form.isValid = false;
-    state.error = 'validate.notValid';
-    return;
-  }
-
-  state.form.isValid = true;
-  state.form.url.value = value;
-
-  if (!isNewUrl) {
-    state.error = 'error.addedBefore';
-    state.form.isValid = false;
+  try {
+    schemaWithCheckDoubleUrl.validateSync(value);
+    return null;
+  } catch (e) {
+    return e.message;
   }
 };
 
@@ -54,7 +42,17 @@ export const onInputHandler = (state) => (e) => {
   }
 
   state.form.processState = 'filling';
-  runValidate(state, valueUrl);
+  const urls = state.feeds.map(({ urlFeed }) => urlFeed);
+  const isError = runValidate(urls, valueUrl);
+
+  if (isError) {
+    state.form.isValid = false;
+    state.error = isError;
+    return;
+  }
+
+  state.form.isValid = true;
+  state.form.url.value = valueUrl;
 };
 
 export const onSubmitHandler = (state) => (e) => {
