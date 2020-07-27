@@ -43,11 +43,11 @@ export const onInputHandler = (state) => (e) => {
 
   state.form.processState = 'filling';
   const urls = state.feeds.map(({ urlFeed }) => urlFeed);
-  const isError = runValidate(urls, valueUrl);
+  const error = runValidate(urls, valueUrl);
 
-  if (isError) {
+  if (error) {
     state.form.isValid = false;
-    state.error = isError;
+    state.error = error;
     return;
   }
 

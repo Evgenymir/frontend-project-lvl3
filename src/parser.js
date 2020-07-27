@@ -1,6 +1,6 @@
-const handlerPost = (post) => {
-  const titlePost = post.querySelector('title').textContent;
-  const linkPost = post.querySelector('link').textContent;
+const makePost = (postData) => {
+  const titlePost = postData.querySelector('title').textContent;
+  const linkPost = postData.querySelector('link').textContent;
 
   return {
     title: titlePost,
@@ -19,7 +19,7 @@ export default (data) => {
 
   const title = doc.querySelector('title').textContent;
   const description = doc.querySelector('description').textContent;
-  const posts = [...doc.querySelectorAll('item')].map((post) => handlerPost(post));
+  const posts = [...doc.querySelectorAll('item')].map((post) => makePost(post));
 
   const result = {
     title,
